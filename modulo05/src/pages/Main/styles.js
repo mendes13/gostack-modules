@@ -3,13 +3,23 @@ import styled, { keyframes, css } from 'styled-components';
 export const Form = styled.form`
   margin-top: 30px;
   display: flex;
+  flex-direction: column;
 
-  input {
-    flex: 1;
-    border: ${props => (props.found ? '1px solid #eee;' : '1px solid red')};
-    padding: 10px 15px;
-    border-radius: 4px;
-    font-size: 16px;
+  div {
+    display: flex;
+    input {
+      flex: 1;
+      border: ${props => (props.found ? '1px solid #eee;' : '1px solid red')};
+      padding: 10px 15px;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+  }
+
+  span {
+    padding: 5px;
+    color: red;
+    display: block;
   }
 `;
 

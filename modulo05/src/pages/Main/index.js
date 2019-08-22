@@ -13,6 +13,7 @@ class Main extends Component {
     repositories: [],
     loading: false,
     found: true,
+    error: '',
   };
 
   // Load data from localStorage
@@ -42,12 +43,22 @@ class Main extends Component {
     this.setState({ loading: true });
     const { newRepo, repositories } = this.state;
 
-    const duplicatedRepo = repositories.some(repo => repo.name === newRepo);
+    const duplicatedRepo = repositories.some(
+      repo => repo.name.toLowerCase() === newRepo.toLowerCase()
+    );
 
     try {
       if (duplicatedRepo) {
         throw new Error('Repositório duplicado!');
       }
+
+      api.interceptors.response.use(null, err => {
+        if (err) {
+          throw new Error('Repositório Inexistente');
+        }
+
+        return Promise.reject(err);
+      });
 
       const response = await api.get(`repos/${newRepo}`);
 
@@ -59,16 +70,17 @@ class Main extends Component {
         newRepo: '',
         repositories: [...repositories, data],
         found: true,
+        error: '',
       });
     } catch (err) {
-      this.setState({ found: false });
+      this.setState({ found: false, error: err.message });
     } finally {
       this.setState({ loading: false });
     }
   };
 
   render() {
-    const { newRepo, loading, repositories, found } = this.state;
+    const { newRepo, loading, repositories, found, error } = this.state;
     return (
       <Container>
         <h1>
@@ -77,20 +89,24 @@ class Main extends Component {
         </h1>
 
         <Form onSubmit={this.handleSubmit} found={found}>
-          <input
-            type="text"
-            placeholder="Adicionar repositório"
-            value={newRepo}
-            onChange={this.handleInputChange}
-          />
+          <div>
+            <input
+              type="text"
+              placeholder="Adicionar repositório"
+              value={newRepo}
+              onChange={this.handleInputChange}
+            />
 
-          <SubmitButton loading={loading ? 1 : 0}>
-            {loading ? (
-              <FaSpinner color="#fff" size={14} />
-            ) : (
-              <FaPlus color="#fff" size={14} />
-            )}
-          </SubmitButton>
+            <SubmitButton loading={loading ? 1 : 0}>
+              {loading ? (
+                <FaSpinner color="#fff" size={14} />
+              ) : (
+                <FaPlus color="#fff" size={14} />
+              )}
+            </SubmitButton>
+          </div>
+
+          {error.length > 0 && <span>{error}</span>}
         </Form>
 
         <List>

@@ -10,13 +10,17 @@ const rotate = keyframes`
 `;
 
 export const Loading = styled.div`
-  color: #fff;
-  font-size: 30px;
-  font-weight: bold;
+  /* color: #fff; */
+  /* font-size: 30px; */
+  /* font-weight: bold; */
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+
+  svg {
+    animation: ${rotate} 2s linear infinite;
+  }
 `;
 
 export const LoadingIssues = styled.div`

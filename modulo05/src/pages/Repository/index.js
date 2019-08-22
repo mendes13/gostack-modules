@@ -130,7 +130,12 @@ class Repository extends Component {
     } = this.state;
 
     if (loadingRepository) {
-      return <Loading>Carregando</Loading>;
+      // return <Loading>Carregando</Loading>;
+      return (
+        <Loading>
+          <FaSpinner color="#fff" size={30} />
+        </Loading>
+      );
     }
 
     return (
